@@ -1,0 +1,277 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private authenticated user profile including verified Gmail, Family Number, salted password hash for privacy lock, and privacy preferences.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase Auth UID of the owner." },
+        "profileCode": { "type": "string", "description": "Short shareable personal profile code (e.g. MEM842190)." },
+        "displayName": { "type": "string", "description": "User display name within the family." },
+        "email": { "type": "string", "description": "Verified Gmail address from Google Sign-In." },
+        "emailVerified": { "type": "boolean", "description": "Whether the Gmail account is verified." },
+        "phoneNumber": { "type": "string", "description": "Normalized family phone number for login/unlock." },
+        "passwordHash": { "type": "string", "description": "Salted SHA-256 password hash for privacy lock and number+password verification." },
+        "passwordSalt": { "type": "string", "description": "Random hex salt for password hashing." },
+        "hasPassword": { "type": "boolean", "description": "Whether a password/PIN is configured." },
+        "familyRole": { "type": "string", "description": "Role label in family such as Parent, Sibling, or Member." },
+        "bio": { "type": "string", "description": "Personal about-me text written by the user." },
+        "moodTag": { "type": "string", "description": "Current mood/air tag." },
+        "avatarBadge": { "type": "string", "description": "Emoji badge displayed on profile avatar." },
+        "privacyLockEnabled": { "type": "boolean", "description": "Whether app launch requires number/password unlock." },
+        "hideMessagePreviews": { "type": "boolean", "description": "Whether message snippets are hidden in chat list." },
+        "readReceiptsEnabled": { "type": "boolean", "description": "Whether read receipts are enabled." },
+        "showOnlineStatus": { "type": "boolean", "description": "Whether online presence is shared with family." },
+        "avatarColorHex": { "type": "string", "description": "Hex color for user avatar badge." },
+        "avatarPhotoBase64": { "type": "string", "description": "Compressed JPEG Base64 profile photo uploaded from gallery." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp of creation." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp of last update." }
+      },
+      "required": ["userId", "displayName", "email", "emailVerified", "hasPassword", "privacyLockEnabled", "hideMessagePreviews", "readReceiptsEnabled", "showOnlineStatus", "createdAt", "updatedAt"]
+    },
+    "ProfileCard": {
+      "title": "ProfileCard",
+      "description": "Non-PII public profile card discoverable via Personal QR scan or Profile Code.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase Auth UID of the owner." },
+        "profileCode": { "type": "string", "description": "Short personal code for QR/code discovery." },
+        "displayName": { "type": "string", "description": "Display name." },
+        "familyRole": { "type": "string", "description": "Family role." },
+        "bio": { "type": "string", "description": "About me bio written by user." },
+        "moodTag": { "type": "string", "description": "Current mood/air vibe." },
+        "avatarBadge": { "type": "string", "description": "Profile avatar emoji badge." },
+        "avatarColorHex": { "type": "string", "description": "Avatar color hex." },
+        "avatarPhotoBase64": { "type": "string", "description": "Compressed JPEG Base64 profile photo uploaded from gallery." },
+        "onlineActive": { "type": "boolean", "description": "Whether user is currently online." },
+        "showOnlineStatus": { "type": "boolean", "description": "Whether user allows showing online indicator." },
+        "lastSeenAt": { "type": "string", "format": "date-time", "description": "Last seen server timestamp." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation server timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Update server timestamp." }
+      },
+      "required": ["userId", "profileCode", "displayName", "familyRole", "onlineActive", "showOnlineStatus", "createdAt", "updatedAt"]
+    },
+    "ProfileCode": {
+      "title": "ProfileCode",
+      "description": "Lookup index mapping a short profileCode to targetUid.",
+      "type": "object",
+      "properties": {
+        "profileCode": { "type": "string", "description": "Short profile code." },
+        "targetUid": { "type": "string", "description": "Owner Firebase UID." },
+        "displayName": { "type": "string", "description": "Owner display name." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Creation timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Update timestamp." }
+      },
+      "required": ["profileCode", "targetUid", "displayName", "createdAt", "updatedAt"]
+    },
+    "FamilyCircle": {
+      "title": "FamilyCircle",
+      "description": "A private family circle containing verified family members.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Family circle display name." },
+        "inviteCode": { "type": "string", "description": "Active invite code for QR and code joining." },
+        "createdBy": { "type": "string", "description": "Creator Firebase Auth UID." },
+        "memberUids": { "type": "array", "description": "Bounded list of member UIDs (max 25)." },
+        "lastJoinedInviteCode": { "type": "string", "description": "Optional invite code used when joining." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp." }
+      },
+      "required": ["name", "inviteCode", "createdBy", "memberUids", "createdAt", "updatedAt"]
+    },
+    "FamilyMember": {
+      "title": "FamilyMember",
+      "description": "Member card stored under a family circle with bio, mood/air, and online status.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Member Firebase Auth UID." },
+        "familyId": { "type": "string", "description": "Parent family circle ID." },
+        "profileCode": { "type": "string", "description": "Member personal profile code." },
+        "displayName": { "type": "string", "description": "Member display name." },
+        "familyRole": { "type": "string", "description": "Member family role." },
+        "phoneHint": { "type": "string", "description": "Masked phone hint." },
+        "avatarColorHex": { "type": "string", "description": "Avatar badge hex color." },
+        "avatarBadge": { "type": "string", "description": "Avatar emoji badge." },
+        "avatarPhotoBase64": { "type": "string", "description": "Compressed JPEG Base64 profile photo uploaded from gallery." },
+        "bio": { "type": "string", "description": "Member bio / about me." },
+        "moodTag": { "type": "string", "description": "Member mood/air tag." },
+        "statusText": { "type": "string", "description": "Current family check-in status." },
+        "onlineActive": { "type": "boolean", "description": "Real-time online indicator." },
+        "lastSeenAt": { "type": "string", "format": "date-time", "description": "Last seen server timestamp." },
+        "memberUids": { "type": "array", "description": "Denormalized member UIDs for local rule evaluation." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp." }
+      },
+      "required": ["userId", "familyId", "displayName", "familyRole", "memberUids", "createdAt", "updatedAt"]
+    },
+    "FamilyInvite": {
+      "title": "FamilyInvite",
+      "description": "Secret QR/code invite entry keyed by inviteCode.",
+      "type": "object",
+      "properties": {
+        "familyId": { "type": "string", "description": "Target family circle ID." },
+        "familyName": { "type": "string", "description": "Target family circle name." },
+        "createdBy": { "type": "string", "description": "UID of creator." },
+        "createdByName": { "type": "string", "description": "Name of creator." },
+        "active": { "type": "boolean", "description": "Whether invite can still be redeemed." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp." }
+      },
+      "required": ["familyId", "familyName", "createdBy", "createdByName", "active", "createdAt", "updatedAt"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "A private family group chat or 1-on-1 conversation.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Conversation title." },
+        "type": { "type": "string", "enum": ["group", "direct"], "description": "Chat type." },
+        "familyId": { "type": "string", "description": "Optional associated family ID." },
+        "createdBy": { "type": "string", "description": "Creator UID." },
+        "memberUids": { "type": "array", "description": "Participant UIDs (max 25)." },
+        "memberNames": { "type": "object", "description": "Map of UID to display name." },
+        "lastMessageText": { "type": "string", "description": "Preview of latest message." },
+        "lastMessageSenderName": { "type": "string", "description": "Sender of latest message." },
+        "lastMessageAt": { "type": "string", "format": "date-time", "description": "Timestamp of latest message." },
+        "disappearingHours": { "type": "integer", "description": "0 for off, 24 or 168 for auto-expire." },
+        "lockedByUids": { "type": "array", "description": "UIDs of members who locked this chat with privacy lock." },
+        "typingUids": { "type": "array", "description": "UIDs currently typing a message." },
+        "typingNames": { "type": "object", "description": "Map of typing UID to display name." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp." }
+      },
+      "required": ["title", "type", "createdBy", "memberUids", "disappearingHours", "lockedByUids", "createdAt", "updatedAt"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "A message inside a private family conversation.",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string", "description": "Parent conversation ID." },
+        "senderId": { "type": "string", "description": "Sender UID." },
+        "senderName": { "type": "string", "description": "Sender display name." },
+        "text": { "type": "string", "description": "Message body or caption." },
+        "messageType": { "type": "string", "enum": ["text", "checkin", "system", "image", "video", "location", "sticker"], "description": "Message category." },
+        "mediaBase64": { "type": "string", "description": "Optional compressed image or video payload." },
+        "thumbnailBase64": { "type": "string", "description": "Optional compressed video thumbnail." },
+        "mediaMimeType": { "type": "string", "description": "Optional MIME type." },
+        "videoDurationMs": { "type": "integer", "description": "Optional video duration in milliseconds." },
+        "stickerId": { "type": "string", "description": "Optional family sticker identifier." },
+        "latitude": { "type": "number", "description": "Optional shared location latitude." },
+        "longitude": { "type": "number", "description": "Optional shared location longitude." },
+        "locationLabel": { "type": "string", "description": "Optional readable location address." },
+        "seenByUids": { "type": "array", "description": "UIDs of members who have seen this message." },
+        "replyToText": { "type": "string", "description": "Optional quoted reply snippet." },
+        "replyToSender": { "type": "string", "description": "Optional quoted sender name." },
+        "reactionEmoji": { "type": "string", "description": "Optional reaction emoji." },
+        "memberUids": { "type": "array", "description": "Denormalized participant UIDs from parent conversation." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp." }
+      },
+      "required": ["conversationId", "senderId", "senderName", "text", "messageType", "memberUids", "createdAt", "updatedAt"]
+    },
+    "CallSession": {
+      "title": "CallSession",
+      "description": "WebRTC audio/video call signaling session.",
+      "type": "object",
+      "properties": {
+        "callerId": { "type": "string", "description": "Caller UID." },
+        "callerName": { "type": "string", "description": "Caller display name." },
+        "calleeId": { "type": "string", "description": "Callee UID." },
+        "calleeName": { "type": "string", "description": "Callee display name." },
+        "conversationId": { "type": "string", "description": "Optional conversation ID." },
+        "callType": { "type": "string", "enum": ["audio", "video"], "description": "Audio or video call." },
+        "status": { "type": "string", "enum": ["ringing", "accepted", "ended", "declined"], "description": "Call lifecycle status." },
+        "participantUids": { "type": "array", "description": "Exactly 2 UIDs [callerId, calleeId]." },
+        "offerSdp": { "type": "string", "description": "WebRTC SDP offer." },
+        "answerSdp": { "type": "string", "description": "WebRTC SDP answer." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp." }
+      },
+      "required": ["callerId", "callerName", "calleeId", "calleeName", "callType", "status", "participantUids", "createdAt", "updatedAt"]
+    },
+    "IceCandidateDoc": {
+      "title": "IceCandidateDoc",
+      "description": "WebRTC ICE candidate exchanged between call participants.",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string", "description": "Sender UID." },
+        "sdpMid": { "type": "string", "description": "ICE sdpMid." },
+        "sdpMLineIndex": { "type": "integer", "description": "ICE sdpMLineIndex." },
+        "sdpCandidate": { "type": "string", "description": "ICE candidate SDP string." },
+        "participantUids": { "type": "array", "description": "Participant UIDs." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp." }
+      },
+      "required": ["senderId", "sdpMid", "sdpMLineIndex", "sdpCandidate", "participantUids", "createdAt"]
+    },
+    "SavedContact": {
+      "title": "SavedContact",
+      "description": "A family/friend contact added by scanning their QR code or Profile ID.",
+      "type": "object",
+      "properties": {
+        "peerUid": { "type": "string", "description": "Added member UID." },
+        "profileCode": { "type": "string", "description": "Added member short profile code." },
+        "displayName": { "type": "string", "description": "Contact display name." },
+        "familyRole": { "type": "string", "description": "Contact role." },
+        "bio": { "type": "string", "description": "Contact bio." },
+        "moodTag": { "type": "string", "description": "Contact current air/mood." },
+        "avatarBadge": { "type": "string", "description": "Contact emoji badge." },
+        "avatarColorHex": { "type": "string", "description": "Contact avatar hex color." },
+        "avatarPhotoBase64": { "type": "string", "description": "Contact compressed gallery photo." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp." }
+      },
+      "required": ["peerUid", "displayName", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Owner-only private profile with Gmail verification, phone number, password hash, bio/mood, and privacy settings."
+    },
+    "/users/{userId}/contacts/{contactUid}": {
+      "schema": { "$ref": "#/entities/SavedContact" },
+      "description": "Owner-only saved QR/ID contacts."
+    },
+    "/profile_cards/{userId}": {
+      "schema": { "$ref": "#/entities/ProfileCard" },
+      "description": "Non-PII profile card scanned via Personal QR or Profile Code."
+    },
+    "/profile_codes/{profileCode}": {
+      "schema": { "$ref": "#/entities/ProfileCode" },
+      "description": "Short profile code lookup mapping to targetUid."
+    },
+    "/families/{familyId}": {
+      "schema": { "$ref": "#/entities/FamilyCircle" },
+      "description": "Family circles shared among verified family member UIDs."
+    },
+    "/families/{familyId}/members/{memberUid}": {
+      "schema": { "$ref": "#/entities/FamilyMember" },
+      "description": "Member cards inside a family circle."
+    },
+    "/family_invites/{inviteCode}": {
+      "schema": { "$ref": "#/entities/FamilyInvite" },
+      "description": "Invite codes for joining a family via QR scanner or invite code."
+    },
+    "/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "Family group and direct private conversations."
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "Real-time messages inside a conversation."
+    },
+    "/calls/{callId}": {
+      "schema": { "$ref": "#/entities/CallSession" },
+      "description": "WebRTC audio/video call signaling rooms."
+    },
+    "/calls/{callId}/caller_candidates/{candidateId}": {
+      "schema": { "$ref": "#/entities/IceCandidateDoc" },
+      "description": "Caller ICE candidates for WebRTC."
+    },
+    "/calls/{callId}/callee_candidates/{candidateId}": {
+      "schema": { "$ref": "#/entities/IceCandidateDoc" },
+      "description": "Callee ICE candidates for WebRTC."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Moinul Family",
+  "description": "Moinul Family private messenger with Gmail verification, QR & ID contacts, gallery photos & videos, stickers, emojis, location sharing, and audio/video calls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Moinul Family</string>
+    <string name="tagline_private_messenger">Moinul Family Private Messenger</string>
+    <string name="nav_chats">Chats</string>
+    <string name="nav_family">Family</string>
+    <string name="nav_privacy">Privacy</string>
+    <string name="auth_tab_gmail">Gmail</string>
+    <string name="auth_tab_number">Number &amp; Pass</string>
+    <string name="auth_tab_scanner">QR Scanner</string>
+    <string name="sign_in_with_google">Continue with Gmail</string>
+    <string name="verified_via_gmail">Verified via Gmail</string>
+    <string name="camera_permission_rationale">Camera access is needed to scan QR codes and make video calls.</string>
+    <string name="grant_camera_permission">Allow Camera</string>
+    <string name="privacy_lock_title">Privacy Vault Locked</string>
+    <string name="unlock_now">Unlock Messenger</string>
+    <string name="message_hint">Write a message to family…</string>
+</resources>
